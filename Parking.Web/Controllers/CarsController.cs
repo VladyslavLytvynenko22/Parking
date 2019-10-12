@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Parking.Data;
+using Parking.Core.Services;
 using Parking.Domain.Models;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Parking.Web.Controllers
@@ -11,39 +9,39 @@ namespace Parking.Web.Controllers
     [ApiController]
     public class CarsController : ControllerBase
     {
-        private readonly ParkingDbContext _context;
+        private readonly CarService _carService;
 
-        public CarsController(ParkingDbContext context)
+        public CarsController(CarService carService)
         {
-            _context = context;
+            _carService = carService;
         }
 
         [HttpGet]
         public IActionResult GetCars()
         {
-            return Ok(_context.Cars.ToList());
+            return Ok(_carService.GetCars());
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCars([FromRoute] int id)
+        public async Task<IActionResult> GetCar([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var cars = await _context.Cars.FindAsync(id);
+            var car = await _carService.GetCar(id);
 
-            if (cars == null)
+            if (car == null)
             {
                 return NotFound();
             }
 
-            return Ok(cars);
+            return Ok(car);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCars([FromRoute] int id, [FromBody] Car car)
+        public async Task<IActionResult> PutCar([FromRoute] int id, [FromBody] Car car)
         {
             if (!ModelState.IsValid)
             {
@@ -55,39 +53,18 @@ namespace Parking.Web.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(car).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CarsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(await _carService.UpdateCar(id, car));
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostCars([FromBody] Car car)
+        public async Task<IActionResult> PostCar([FromBody] Car car)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Cars.Add(car);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCars", new { id = car.Id }, car);
+            return Ok(await _carService.CreateCar(car));
         }
 
         [HttpDelete("{id}")]
@@ -98,21 +75,9 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var cars = await _context.Cars.FindAsync(id);
-            if (cars == null)
-            {
-                return NotFound();
-            }
+            await _carService.DeleteCar(id);
 
-            _context.Cars.Remove(cars);
-            await _context.SaveChangesAsync();
-
-            return Ok(cars);
-        }
-
-        private bool CarsExists(int id)
-        {
-            return _context.Cars.Any(e => e.Id == id);
+            return Ok();
         }
     }
 }

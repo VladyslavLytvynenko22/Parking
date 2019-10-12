@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parking.Domain", "Parking.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parking.Data", "Parking.Data\Parking.Data.csproj", "{01147517-1F22-43DD-A6D5-766EC2098B14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parking.Core", "Parking.Core\Parking.Core.csproj", "{26D7C6F7-BEFD-4FED-B3BD-21998B89F16B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{01147517-1F22-43DD-A6D5-766EC2098B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01147517-1F22-43DD-A6D5-766EC2098B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01147517-1F22-43DD-A6D5-766EC2098B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26D7C6F7-BEFD-4FED-B3BD-21998B89F16B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D7C6F7-BEFD-4FED-B3BD-21998B89F16B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D7C6F7-BEFD-4FED-B3BD-21998B89F16B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D7C6F7-BEFD-4FED-B3BD-21998B89F16B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

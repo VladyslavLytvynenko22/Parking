@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Parking.Core.Services;
 using Parking.Data;
 
 namespace Parking.Web
@@ -24,6 +25,8 @@ namespace Parking.Web
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddTransient<CarService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
