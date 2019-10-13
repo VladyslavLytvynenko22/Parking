@@ -32,14 +32,14 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var Ovners = await _context.Owners.FindAsync(id);
+            var Owners = await _context.Owners.FindAsync(id);
 
-            if (Ovners == null)
+            if (Owners == null)
             {
                 return NotFound();
             }
 
-            return Ok(Ovners);
+            return Ok(Owners);
         }
 
         [HttpPut("{id}")]
