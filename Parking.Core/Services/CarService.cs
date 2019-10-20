@@ -1,4 +1,6 @@
-﻿using Parking.Data;
+﻿using AutoMapper;
+using Parking.Data;
+using Parking.Domain.Dto;
 using Parking.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -10,35 +12,37 @@ namespace Parking.Core.Services
     public class CarService
     {
         private readonly ParkingDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public CarService(ParkingDbContext dbContext)
+        public CarService(ParkingDbContext dbContext, IMapper mapper)
         {
-            _dbContext = dbContext;
+            this._dbContext = dbContext;
+            this._mapper = mapper;
         }
 
-        public List<Car> GetCars()
+        public List<CarDto> GetCars()
         {
-            return _dbContext.Cars.ToList();
+            return _mapper.Map<List<CarDto>>(_dbContext.Cars.ToList() as List<Car>);
         }
 
-        public async Task<Car> GetCar(int id)
+        public async Task<CarDto> GetCar(int id)
         {
-            return await _dbContext.Cars.FindAsync(id);
+            return _mapper.Map<CarDto>(await _dbContext.Cars.FindAsync(id));
         }
 
-        public async Task<Car> CreateCar(Car car)
+        public async Task<CarDto> CreateCar(CarDto carDto)
         {
-            _dbContext.Cars.Add(car);
+            _dbContext.Cars.Add(_mapper.Map<Car>(carDto));
 
             await _dbContext.SaveChangesAsync();
 
-            return car;
+            return carDto;
         }
 
-        public async Task<Car> UpdateCar(int id, Car car)
+        public async Task<CarDto> UpdateCar(int id, CarDto cardto)
         {
-            var carFromDb = _dbContext.Cars.FirstOrDefault(c => c.Id == id);
-
+            Car carFromDb = _dbContext.Cars.FirstOrDefault(c => c.Id == id);
+            Car car = _mapper.Map<Car>(cardto);
             carFromDb.Brand = car.Brand;
             carFromDb.CarPlate = car.CarPlate;
             carFromDb.OwnerId = car.OwnerId;
@@ -47,7 +51,7 @@ namespace Parking.Core.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return carFromDb;
+            return _mapper.Map<CarDto>(carFromDb);
         }
 
         public async Task DeleteCar(int id)
