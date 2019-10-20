@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Parking.Domain.Models
+namespace Parking.Domain.Dto
 {
-    public class Car
+    public class CarDto
     {
         public int Id { get; set; }
         [Required]
@@ -13,8 +12,5 @@ namespace Parking.Domain.Models
         [Required]
         public int OwnerId { get; set; }
         public string Photo { get; set; }
-
-        public Owner Owner { get; set; }
-        public List<Garage> Garages { get; set; } = new List<Garage>();
     }
 }

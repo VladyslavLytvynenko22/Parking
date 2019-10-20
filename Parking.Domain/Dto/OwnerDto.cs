@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Parking.Domain.Models
+namespace Parking.Domain.Dto
 {
-    public class Owner
+    class OwnerDto
     {
         public int Id { get; set; }
         [Required]
@@ -12,7 +11,5 @@ namespace Parking.Domain.Models
         [Required]
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-
-        public List<Car> Cars { get; set; } = new List<Car>();
     }
 }
