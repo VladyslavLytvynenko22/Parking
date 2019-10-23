@@ -4,22 +4,74 @@
     <meta charset="utf-8" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/JavaScript.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/StyleSheet.css" />
     <title>Parking</title>
 </head>
 <body>
-    <div class="panel panel-primary">
-        <div class="panel-heading"">
-            All cars
-        </div>   <!--en dof panel-heading -->
-        <div class="panel-body">
-            <table class="table table-bordered" id="Table">
+    <div class="title">
+        <div class="DivForTable">
+            <table id="TableGetAllCars">
+                <caption>Table get all cars</caption>
                 <tr>
                     <th>Id</th>
                     <th>Brand</th>
                     <th>Car plate</th>
-                </tr>   <!--end of table-row -->
-            </table>   <!--end of table -->
-        </div> <!--end of Panel-body -->
-    </div> <!--end of Panel -->
+                    <th>Owner</th>
+                </tr>
+            </table>
+        </div>
+        <div class="btnsDiv">
+            <input value="Get all cars" type="button" id="btnGetAllCars" />
+        </div>
+    </div>
+
+    <div class="title">
+        <div class="divForInputValue">
+            <lable class="LableForInput" for="enterIdCarForGetOrUpdateCar">Id: </lable>
+            <input type="number" id="enterIdCarForGetOrUpdateCar" />
+        </div>
+        <div class="btnsDiv">
+            <input value="Get car" type="button" id="btnGetCar" />
+        </div>
+        <div class="divForInputValue">
+            <lable class="LableForInput" for="enterBrandForGetOrUpdateCar">Brand: </lable>
+            <input type="text" id="enterBrandForGetOrUpdateCar" />
+        </div>
+        <div class="divForInputValue">
+            <lable class="LableForInput" for="enterCarPlateForGetOrUpdateCar">Car plate: </lable>
+            <input type="text" id="enterCarPlateForGetOrUpdateCar" />
+        </div>
+        <div class="divForInputValue">
+            <lable class="LableForInput" for="enterOwnerIdForGetOrUpdateCar">Owner: </lable>
+            <input type="text" id="enterOwnerIdForGetOrUpdateCar" />
+        </div>
+        <div class="btnsDiv">
+            <input value="Update car" type="button" id="btnUpdateCar" />
+        </div>
+    </div>
+
+    <div class="title">
+        <div id="CreateCarBtnDiv">
+            <div class="divForInputValue">
+                <lable class="LableForInput" for="enterIdCarForCreateCar">Id: </lable>
+                <input type="number" id="enterIdCarForCreateCar" readonly />
+            </div>
+            <div class="divForInputValue">
+                <lable class="LableForInput" for="enterBrandForCreateCar">Brand: </lable>
+                <input type="text" id="enterBrandForCreateCar" />
+            </div>
+            <div class="divForInputValue">
+                <lable class="LableForInput" for="enterCarPlateForCreateCar">Car plate: </lable>
+                <input type="text" id="enterCarPlateForCreateCar" />
+            </div>
+            <div class="divForInputValue">
+                <lable class="LableForInput" for="enterOwnerIdForCreateCar">Owner: </lable>
+                <input type="text" id="enterOwnerIdForCreateCar" />
+            </div>
+        </div>
+        <div class="btnsDiv">
+            <input value="Create car" type="button" id="btnCreateCar" />
+        </div>
+    </div>
 </body>
 </html>

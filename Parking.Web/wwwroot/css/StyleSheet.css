@@ -1,2 +1,43 @@
-﻿body {
+﻿.title {
+    background-color: aqua;
+    float: left;
+    border: solid;
+}
+
+.DivForTable {
+    border: solid;
+    max-height: 500px;
+    overflow: scroll;
+    background-color: antiquewhite;
+}
+
+.LableForInput {
+    float: left;
+}
+
+.btnsDiv {
+    text-align: right;
+}
+
+.divForInputValue {
+    text-align: right;
+}
+
+div {
+    margin: 5px 5px;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    margin: auto;
+}
+
+TD, TH {
+    padding: 3px;
+    border: 1px solid black;
+}
+
+TH {
+    background: #b0e0e6;
 }
