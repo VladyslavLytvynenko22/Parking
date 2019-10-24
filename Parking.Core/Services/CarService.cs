@@ -1,4 +1,5 @@
-﻿using Parking.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Parking.Data;
 using Parking.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Parking.Core.Services
         public async Task<Car> CreateCar(Car car)
         {
             _dbContext.Cars.Add(car);
-
+            _dbContext.Entry(car).State = EntityState.Added;
             await _dbContext.SaveChangesAsync();
 
             return car;
@@ -37,14 +38,14 @@ namespace Parking.Core.Services
 
         public async Task<Car> UpdateCar(int id, Car car)
         {
-            var carFromDb = _dbContext.Cars.FirstOrDefault(c => c.Id == id);
+            var carFromDb = await _dbContext.Cars.FindAsync(id);
 
             carFromDb.Brand = car.Brand;
             carFromDb.CarPlate = car.CarPlate;
             carFromDb.OwnerId = car.OwnerId;
 
             _dbContext.Cars.Update(carFromDb);
-
+            _dbContext.Entry(carFromDb).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
             return carFromDb;
@@ -59,6 +60,7 @@ namespace Parking.Core.Services
             }
 
             _dbContext.Cars.Remove(car);
+            _dbContext.Entry(car).State = EntityState.Deleted;
 
             await _dbContext.SaveChangesAsync();
         }

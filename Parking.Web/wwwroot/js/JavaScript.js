@@ -8,15 +8,15 @@
 
 function ParseCarToTr(car) {
     return "<tr>" +
-            "<td id='Id'>" + car.id + "</td>" +
-            "<td id='Brand'>" + car.brand + "</td>" +
-            "<td id='Car plate'>" + car.carPlate + "</td>" +
-            "<td id='Owner'>" + car.ownerId + "</td>" +
+        "<td id='Id'>" + car.id + "</td>" +
+        "<td id='Brand'>" + car.brand + "</td>" +
+        "<td id='Car plate'>" + car.carPlate + "</td>" +
+        "<td id='Owner'>" + car.ownerId + "</td>" +
         "</tr>";
 }
 
 
-$(document).on("click", "#btnGetAllCars", function GetAllCars () {
+$(document).on("click", "#btnGetAllCars", function GetAllCars() {
     $.ajax({
         type: "GET",
         url: "/api/Cars",
@@ -30,20 +30,12 @@ $(document).on("click", "#btnGetAllCars", function GetAllCars () {
             });
             $('#TableGetAllCars').append(rows);
             console.log(data);
-        },
-
-        failure: function (data) {
-            alert(data.responseText);
-        },
-        error: function (data) {
-            alert(data.responseText);
         }
-
     });
 });
 
 $(document).on("click", "#btnGetCar", function () {
-    var id = $('#enterIdCarForGetOrUpdateCar').val();
+    var id = $('#enterIdCarForGetOrUpdateOrDeleteCar').val();
     if (id > 0) {
         $.ajax({
             type: "GET",
@@ -52,36 +44,50 @@ $(document).on("click", "#btnGetCar", function () {
             dataType: "json",
             success: function (car) {
                 if (car != null) {
-                    $('#enterBrandForGetOrUpdateCar').val(car.brand);
-                    $('#enterCarPlateForGetOrUpdateCar').val(car.carPlate);
-                    $('#enterOwnerIdForGetOrUpdateCar').val(car.ownerId);
+                    $('#enterBrandForGetOrUpdateOrDeleteCar').val(car.brand);
+                    $('#enterCarPlateForGetOrUpdateOrDeleteCar').val(car.carPlate);
+                    $('#enterOwnerIdForGetOrUpdateOrDeleteCar').val(car.ownerId);
                     console.log(car);
                 }
             },
             failure: function (car) {
                 alert(car.responseText);
             },
-            error: function (jqXHR, error, errorThrown) {
-                if (jqXHR.status && jqXHR.status == 404) {
-                    alert("Nothing found");//TODO CLEAR FIELD
-                    $('#enterBrandForGetOrUpdateCar').val("");
-                    $('#enterCarPlateForGetOrUpdateCar').val("");
-                    $('#enterOwnerIdForGetOrUpdateCar').val("");
-                } else {
-                    alert(jqXHR.responseText);
+            error: function (jxqr, error, status) {
+                console.log(jxqr);
+                var errorText = null;
+                if (jxqr.responseText === "") {
+                    errorText = jxqr.statusText;
                 }
-            }
+                else {
+                    var response = JSON.parse(jxqr.responseText);
+                    if (response['']) {
 
+                        $.each(response[''], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                    if (response['id']) {
+
+                        $.each(response['id'], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                }
+                alert(errorText);
+                $('#enterBrandForGetOrUpdateOrDeleteCar').val("");
+                $('#enterCarPlateForGetOrUpdateOrDeleteCar').val("");
+                $('#enterOwnerIdForGetOrUpdateOrDeleteCar').val("");
+            }
         });
     } else alert("Enter all empty field!");
-
 });
 
 $(document).on("click", "#btnUpdateCar", function () {
-    var id = $('#enterIdCarForGetOrUpdateCar').val();
-    var brand = $('#enterBrandForGetOrUpdateCar').val();
-    var carPlate = $('#enterCarPlateForGetOrUpdateCar').val();
-    var ownerId = $('#enterOwnerIdForGetOrUpdateCar').val();
+    var id = $('#enterIdCarForGetOrUpdateOrDeleteCar').val();
+    var brand = $('#enterBrandForGetOrUpdateOrDeleteCar').val();
+    var carPlate = $('#enterCarPlateForGetOrUpdateOrDeleteCar').val();
+    var ownerId = $('#enterOwnerIdForGetOrUpdateOrDeleteCar').val();
     var dataToPut = JSON.stringify({//TODO fix for DTO model
         brand: brand,
         carPlate: carPlate,
@@ -91,8 +97,6 @@ $(document).on("click", "#btnUpdateCar", function () {
         ownerId: ownerId,
         photo: null
     });
-    /*if (brand != "" && carPlate != "") {
-    }*/
     if (id > 0) {
         $.ajax({
             type: "PUT",
@@ -106,12 +110,105 @@ $(document).on("click", "#btnUpdateCar", function () {
                 console.log(car.responseText);
                 alert(car.responseText);
             },
-            error: function (car) {
-                console.log(car.responseText);
-                alert(car.responseText);
+            error: function (jxqr, error, status) {
+                console.log(jxqr);
+                var errorText = null;
+                if (jxqr.responseText === "") {
+                    errorText = jxqr.statusText;
+                }
+                else {
+                    var response = JSON.parse(jxqr.responseText);
+                    if (response['']) {
+
+                        $.each(response[''], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                    if (response['id']) {
+
+                        $.each(response['id'], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                    if (response['brand']) {
+
+                        $.each(response['brand'], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                    if (response['carPlate']) {
+
+                        $.each(response['carPlate'], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                    if (response['ownerId']) {
+
+                        $.each(response['ownerId'], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                    if (response['photo']) {
+
+                        $.each(response['photo'], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                }
+                alert(errorText);
             }
         });
     } else alert("Enter all empty field!");
+});
+
+$(document).on("click", "#btnDeleteCar", function () {
+    var id = $('#enterIdCarForGetOrUpdateOrDeleteCar').val();
+    if (id > 0) {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/Cars/" + id,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (car) {
+                if (car != null) {
+                    $('#enterBrandForGetOrUpdateOrDeleteCar').val(car.brand);
+                    $('#enterCarPlateForGetOrUpdateOrDeleteCar').val(car.carPlate);
+                    $('#enterOwnerIdForGetOrUpdateOrDeleteCar').val(car.ownerId);
+                    console.log(car);
+                }
+            },
+            failure: function (car) {
+                alert(car.responseText);
+            },
+            error: function (jxqr, error, status) {
+                console.log(jxqr);
+                var errorText = null;
+                if (jxqr.responseText === "") {
+                    errorText = jxqr.statusText;
+                }
+                else {
+                    var response = JSON.parse(jxqr.responseText);
+                    if (response['']) {
+
+                        $.each(response[''], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                    if (response['id']) {
+
+                        $.each(response['id'], function (index, item) {
+                            errorText += "\n" + item;
+                        });
+                    }
+                }
+                alert(errorText);
+                $('#enterBrandForGetOrUpdateOrDeleteCar').val("");
+                $('#enterCarPlateForGetOrUpdateOrDeleteCar').val("");
+                $('#enterOwnerIdForGetOrUpdateOrDeleteCar').val("");
+            }
+        });
+    } else alert("Enter all empty field!");
+
 });
 
 $(document).on("click", "#btnCreateCar", function () {
@@ -145,9 +242,52 @@ $(document).on("click", "#btnCreateCar", function () {
             console.log(car.responseText);
             alert(car.responseText);
         },
-        error: function (car) {
-            console.log(car.responseText);
-            alert(car.responseText);
+        error: function (jxqr, error, status) {
+            console.log(jxqr);
+            var errorText = null;
+            if (jxqr.responseText === "") {
+                errorText = jxqr.statusText;
+            }
+            else {
+                var response = JSON.parse(jxqr.responseText);
+                if (response['']) {
+
+                    $.each(response[''], function (index, item) {
+                        errorText += "\n" + item;
+                    });
+                }
+                if (response['id']) {
+
+                    $.each(response['id'], function (index, item) {
+                        errorText += "\n" + item;
+                    });
+                }
+                if (response['brand']) {
+
+                    $.each(response['brand'], function (index, item) {
+                        errorText += "\n" + item;
+                    });
+                }
+                if (response['carPlate']) {
+
+                    $.each(response['carPlate'], function (index, item) {
+                        errorText += "\n" + item;
+                    });
+                }
+                if (response['ownerId']) {
+
+                    $.each(response['ownerId'], function (index, item) {
+                        errorText += "\n" + item;
+                    });
+                }
+                if (response['photo']) {
+
+                    $.each(response['photo'], function (index, item) {
+                        errorText += "\n" + item;
+                    });
+                }
+            }
+            alert(errorText);
         }
 
     });
