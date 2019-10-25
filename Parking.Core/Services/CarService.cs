@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Parking.Data;
-using Parking.Domain.Dto;
+﻿using Parking.Data;
 using Parking.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -12,35 +10,39 @@ namespace Parking.Core.Services
     public class CarService
     {
         private readonly ParkingDbContext _dbContext;
-        private readonly IMapper _mapper;
 
-        public CarService(ParkingDbContext dbContext, IMapper mapper)
+        public CarService(ParkingDbContext dbContext)
         {
-            this._dbContext = dbContext;
-            this._mapper = mapper;
+            _dbContext = dbContext;
         }
 
-        public List<CarDto> GetCars()
+        public List<Car> GetCars()
         {
-            return _mapper.Map<List<CarDto>>(_dbContext.Cars.ToList() as List<Car>);
+            return _dbContext.Cars.ToList();
         }
 
-        public async Task<CarDto> GetCar(int id)
+        public async Task<Car> GetCar(int id)
         {
-            return _mapper.Map<CarDto>(await _dbContext.Cars.FindAsync(id));
+            return await _dbContext.Cars.FindAsync(id);
         }
 
-        public async Task<CarDto> CreateCar(CarDto carDto)
+        public async Task<Car> CreateCar(Car car)
         {
-            _dbContext.Cars.Add(_mapper.Map<Car>(carDto));
+            _dbContext.Cars.Add(car);
 
             await _dbContext.SaveChangesAsync();
 
-            return carDto;
+            return car;
         }
 
-        public async Task<CarDto> UpdateCar(int id, CarDto cardto)
+        public async Task<Car> UpdateCar(int id, Car car)
         {
+            var carFromDb = _dbContext.Cars.FirstOrDefault(c => c.Id == id);
+            if (carFromDb == null)
+            {
+                throw new Exception($"Unable to update. Car id: {id} not found.");
+            }
+
             carFromDb.Brand = car.Brand;
             carFromDb.CarPlate = car.CarPlate;
             carFromDb.OwnerId = car.OwnerId;
@@ -50,7 +52,7 @@ namespace Parking.Core.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return _mapper.Map<CarDto>(carFromDb);
+            return carFromDb;
         }
 
         public async Task DeleteCar(int id)
