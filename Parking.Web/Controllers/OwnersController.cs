@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Parking.Core.Services;
+using Microsoft.EntityFrameworkCore;
+using Parking.Data;
 using Parking.Domain.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Parking.Web.Controllers
@@ -9,17 +11,17 @@ namespace Parking.Web.Controllers
     [ApiController]
     public class OwnersController : ControllerBase
     {
-        private readonly OwnerService _ownerService;
+        private readonly ParkingDbContext _context;
 
-        public OwnersController(OwnerService ownerService)
+        public OwnersController(ParkingDbContext context)
         {
-            _ownerService = ownerService;
+            _context = context;
         }
 
         [HttpGet]
         public IActionResult GetOwners()
         {
-            return Ok(_ownerService.GetOwners());
+            return Ok(_context.Owners.ToList());
         }
 
         [HttpGet("{id}")]
@@ -30,7 +32,14 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _ownerService.GetOwner(id));
+            var Ovners = await _context.Owners.FindAsync(id);
+
+            if (Ovners == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(Ovners);
         }
 
         [HttpPut("{id}")]
@@ -46,7 +55,25 @@ namespace Parking.Web.Controllers
                 return BadRequest();
             }
 
-            return Ok(await _ownerService.UpdateOwner(id, owner));
+            _context.Entry(owner).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OwnersExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         [HttpPost]
@@ -57,7 +84,10 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(_ownerService.CreateOwner(owner));
+            _context.Owners.Add(owner);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetOwner", new { id = owner.Id }, owner);
         }
 
         [HttpDelete("{id}")]
@@ -68,9 +98,21 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _ownerService.DeleteOwner(id);
+            var owner = await _context.Owners.FindAsync(id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
 
-            return Ok();
+            _context.Owners.Remove(owner);
+            await _context.SaveChangesAsync();
+
+            return Ok(owner);
+        }
+
+        private bool OwnersExists(int id)
+        {
+            return _context.Owners.Any(e => e.Id == id);
         }
     }
 }

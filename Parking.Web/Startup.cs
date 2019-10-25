@@ -27,8 +27,6 @@ namespace Parking.Web
             });
 
             services.AddTransient<CarService>();
-            services.AddTransient<GarageService>();
-            services.AddTransient<OwnerService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
