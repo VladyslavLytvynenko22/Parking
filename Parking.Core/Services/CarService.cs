@@ -38,15 +38,10 @@ namespace Parking.Core.Services
         public async Task<Car> UpdateCar(int id, Car car)
         {
             var carFromDb = _dbContext.Cars.FirstOrDefault(c => c.Id == id);
-            if (carFromDb == null)
-            {
-                throw new Exception($"Unable to update. Car id: {id} not found.");
-            }
 
             carFromDb.Brand = car.Brand;
             carFromDb.CarPlate = car.CarPlate;
             carFromDb.OwnerId = car.OwnerId;
-            carFromDb.Photo = car.Photo;
 
             _dbContext.Cars.Update(carFromDb);
 
@@ -60,7 +55,7 @@ namespace Parking.Core.Services
             var car = await _dbContext.Cars.FindAsync(id);
             if (car == null)
             {
-                throw new Exception($"Unable to delete. Car id: {id} not found.");
+                throw new Exception("Unable to delete. Car not found.");
             }
 
             _dbContext.Cars.Remove(car);
