@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Parking.Domain.Dto
 {
-    class OwnerDto
+    public class OwnerDto
     {
         public int Id { get; set; }
 

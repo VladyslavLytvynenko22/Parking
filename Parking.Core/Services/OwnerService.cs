@@ -1,4 +1,6 @@
-﻿using Parking.Data;
+﻿using AutoMapper;
+using Parking.Data;
+using Parking.Domain.Dto;
 using Parking.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -10,31 +12,36 @@ namespace Parking.Core.Services
     public class OwnerService
     {
         private readonly ParkingDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public OwnerService(ParkingDbContext dbContext)
+        public OwnerService(ParkingDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            this._mapper = mapper;
         }
 
-        public List<Owner> GetOwners()
+        public List<OwnerDto> GetOwners()
         {
-            return _dbContext.Owners.ToList();
+            return _mapper.Map<List<OwnerDto>>(_dbContext.Owners.ToList());
         }
 
-        public async Task<Owner> GetOwner(int id)
+        public async Task<OwnerDto> GetOwner(int id)
         {
-            return await _dbContext.Owners.FindAsync(id);
+            return _mapper.Map<OwnerDto>(await _dbContext.Owners.FindAsync(id));
         }
 
-        public async Task<Owner> CreateOwner(Owner owner)
+        public async Task<OwnerDto> CreateOwner(OwnerDto ownerDto)
         {
-            _dbContext.Add(owner);
+            Owner owner = _dbContext.Owners.Add(_mapper.Map<Owner>(ownerDto))?.Entity;
+
+            OwnerDto ownerDtoFromDb = _mapper.Map<OwnerDto>(owner);
+
             await _dbContext.SaveChangesAsync();
 
-            return owner;
+            return ownerDtoFromDb;
         }
 
-        public async Task<Owner> UpdateOwner(int id, Owner owner)
+        public async Task<OwnerDto> UpdateOwner(int id, OwnerDto ownerDto)
         {
             var ownerFromDb = _dbContext.Owners.FirstOrDefault(o => o.Id == id);
             if (ownerFromDb == null)
@@ -42,15 +49,17 @@ namespace Parking.Core.Services
                 throw new Exception($"Unable to update. Owner id: {id} not found.");
             }
 
-            ownerFromDb.FirstName = owner.FirstName;
-            ownerFromDb.LastName = owner.LastName;
-            ownerFromDb.DateOfBirth = owner.DateOfBirth;
+            Owner ownerFromDto = _mapper.Map<Owner>(ownerDto);
 
-            _dbContext.Owners.Update(ownerFromDb);
+            ownerFromDb.FirstName = ownerFromDb.FirstName != ownerFromDto.FirstName ? ownerFromDb.FirstName : ownerFromDto.FirstName;
+            ownerFromDb.LastName = ownerFromDb.LastName != ownerFromDto.LastName ? ownerFromDb.LastName : ownerFromDto.LastName;
+            ownerFromDb.DateOfBirth = ownerFromDb.DateOfBirth != ownerFromDto.DateOfBirth ? ownerFromDb.DateOfBirth : ownerFromDto.DateOfBirth;
+            
+            Owner owner = _dbContext.Owners.Update(ownerFromDb)?.Entity;
 
             await _dbContext.SaveChangesAsync();
 
-            return ownerFromDb;
+            return _mapper.Map<OwnerDto>(owner);
         }
 
         public async Task DeleteOwner(int id)
