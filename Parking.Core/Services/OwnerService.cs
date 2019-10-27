@@ -44,7 +44,7 @@ namespace Parking.Core.Services
 
             ownerFromDb.FirstName = owner.FirstName;
             ownerFromDb.LastName = owner.LastName;
-            ownerFromDb.Dob = owner.Dob;
+            ownerFromDb.DateOfBirth = owner.DateOfBirth;
 
             _dbContext.Owners.Update(ownerFromDb);
 
