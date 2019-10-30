@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Parking.Core.Services;
-using Parking.Domain.Models;
+using Parking.Domain.Dto;
 using System.Threading.Tasks;
 
 namespace Parking.Web.Controllers
@@ -41,30 +41,30 @@ namespace Parking.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCar([FromRoute] int id, [FromBody] Car car)
+        public async Task<IActionResult> PutCar([FromRoute] int id, [FromBody] CarDto cardto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != car.Id)
+            if (id != cardto.Id)
             {
                 return BadRequest();
             }
 
-            return Ok(await _carService.UpdateCar(id, car));
+            return Ok(await _carService.UpdateCar(id, cardto));
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostCar([FromBody] Car car)
+        public async Task<IActionResult> PostCar([FromBody] CarDto cardto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _carService.CreateCar(car));
+            return Ok(await _carService.CreateCar(cardto));
         }
 
         [HttpDelete("{id}")]

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Parking.Domain.Models
+namespace Parking.Domain.Dto
 {
-    public class Garage
+    public class GarageDto
     {
         public int Id { get; set; }
 
@@ -12,7 +12,5 @@ namespace Parking.Domain.Models
         public string Color { get; set; }
 
         public int? CarId { get; set; }
-
-        public Car Car { get; set; }
     }
 }

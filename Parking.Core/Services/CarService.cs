@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using Parking.Data;
+using Parking.Domain.Dto;
+﻿using Microsoft.EntityFrameworkCore;
 using Parking.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -11,44 +13,52 @@ namespace Parking.Core.Services
     public class CarService
     {
         private readonly ParkingDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public CarService(ParkingDbContext dbContext)
+        public CarService(ParkingDbContext dbContext, IMapper mapper)
         {
-            _dbContext = dbContext;
+            this._dbContext = dbContext;
+            this._mapper = mapper;
         }
 
-        public List<Car> GetCars()
+        public List<CarDto> GetCars()
         {
-            return _dbContext.Cars.ToList();
+            return _mapper.Map<List<CarDto>>(_dbContext.Cars.ToList());
         }
 
-        public async Task<Car> GetCar(int id)
+        public async Task<CarDto> GetCar(int id)
         {
-            return await _dbContext.Cars.FindAsync(id);
+            return _mapper.Map<CarDto>(await _dbContext.Cars.FindAsync(id));
         }
 
-        public async Task<Car> CreateCar(Car car)
+        public async Task<CarDto> CreateCar(CarDto carDto)
         {
-            _dbContext.Cars.Add(car);
-            _dbContext.Entry(car).State = EntityState.Added;
+            Car car = _dbContext.Cars.Add(_mapper.Map<Car>(carDto))?.Entity;
+            CarDto carDtoFromDb = _mapper.Map<CarDto>(car);
+
             await _dbContext.SaveChangesAsync();
 
-            return car;
+            return carDtoFromDb;
         }
 
-        public async Task<Car> UpdateCar(int id, Car car)
+        public async Task<CarDto> UpdateCar(int id, CarDto carDto)
         {
-            var carFromDb = await _dbContext.Cars.FindAsync(id);
+            Car carFromDb = _dbContext.Cars.FirstOrDefault(c => c.Id == id);
+            if (carFromDb == null)
+            {
+                throw new Exception($"Unable to update. Garage id: {id} not found.");
+            }
+            Car carFromDto = _mapper.Map<Car>(carDto);
 
-            carFromDb.Brand = car.Brand;
-            carFromDb.CarPlate = car.CarPlate;
-            carFromDb.OwnerId = car.OwnerId;
+            carFromDb.Brand = carFromDb.Brand != carFromDto.Brand ? carFromDto.Brand : carFromDb.Brand;
+            carFromDb.CarPlate = carFromDb.CarPlate != carFromDto.CarPlate ? carFromDto.CarPlate : carFromDb.CarPlate;
+            carFromDb.OwnerId = carFromDb.OwnerId != carFromDto.OwnerId ? carFromDto.OwnerId : carFromDb.OwnerId;
 
-            _dbContext.Cars.Update(carFromDb);
-            _dbContext.Entry(carFromDb).State = EntityState.Modified;
+            Car car = _dbContext.Cars.Update(carFromDb)?.Entity;
+
             await _dbContext.SaveChangesAsync();
 
-            return carFromDb;
+            return _mapper.Map<CarDto>(car);
         }
 
         public async Task DeleteCar(int id)

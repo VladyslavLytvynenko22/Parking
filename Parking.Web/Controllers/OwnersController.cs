@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Parking.Data;
-using Parking.Domain.Models;
-using System.Linq;
+using Parking.Core.Services;
+using Parking.Domain.Dto;
 using System.Threading.Tasks;
 
 namespace Parking.Web.Controllers
@@ -11,17 +9,17 @@ namespace Parking.Web.Controllers
     [ApiController]
     public class OwnersController : ControllerBase
     {
-        private readonly ParkingDbContext _context;
+        private readonly OwnerService _ownerService;
 
-        public OwnersController(ParkingDbContext context)
+        public OwnersController(OwnerService ownerService)
         {
-            _context = context;
+            _ownerService = ownerService;
         }
 
         [HttpGet]
         public IActionResult GetOwners()
         {
-            return Ok(_context.Owners.ToList());
+            return Ok(_ownerService.GetOwners());
         }
 
         [HttpGet("{id}")]
@@ -32,62 +30,34 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var Ovners = await _context.Owners.FindAsync(id);
-
-            if (Ovners == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(Ovners);
+            return Ok(await _ownerService.GetOwner(id));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOwners([FromRoute] int id, [FromBody] Owner owner)
+        public async Task<IActionResult> PutOwners([FromRoute] int id, [FromBody] OwnerDto ownerDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != owner.Id)
+            if (id != ownerDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(owner).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OwnersExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(await _ownerService.UpdateOwner(id, ownerDto));
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostOwners([FromBody] Owner owner)
+        public async Task<IActionResult> PostOwners([FromBody] OwnerDto ownerDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Owners.Add(owner);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOwner", new { id = owner.Id }, owner);
+            return Ok(_ownerService.CreateOwner(ownerDto));
         }
 
         [HttpDelete("{id}")]
@@ -98,21 +68,9 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var owner = await _context.Owners.FindAsync(id);
-            if (owner == null)
-            {
-                return NotFound();
-            }
+            await _ownerService.DeleteOwner(id);
 
-            _context.Owners.Remove(owner);
-            await _context.SaveChangesAsync();
-
-            return Ok(owner);
-        }
-
-        private bool OwnersExists(int id)
-        {
-            return _context.Owners.Any(e => e.Id == id);
+            return Ok();
         }
     }
 }

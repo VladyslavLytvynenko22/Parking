@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Parking.Data;
-using Parking.Domain.Models;
-using System.Linq;
+using Parking.Core.Services;
+using Parking.Domain.Dto;
 using System.Threading.Tasks;
 
 namespace Parking.Web.Controllers
@@ -11,17 +9,17 @@ namespace Parking.Web.Controllers
     [ApiController]
     public class GaragesController : ControllerBase
     {
-        private readonly ParkingDbContext _context;
+        private readonly GarageService _garageService;
 
-        public GaragesController(ParkingDbContext context)
+        public GaragesController(GarageService garageService)
         {
-            _context = context;
+            _garageService = garageService;
         }
 
         [HttpGet]
         public IActionResult GetGarages()
         {
-            return Ok(_context.Garages.ToList());
+            return Ok(_garageService.GetGarages());
         }
 
         [HttpGet("{id}")]
@@ -32,7 +30,7 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var garages = await _context.Garages.FindAsync(id);
+            var garages = await _garageService.GetGarage(id);
 
             if (garages == null)
             {
@@ -43,51 +41,30 @@ namespace Parking.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGarages([FromRoute] int id, [FromBody] Garage garages)
+        public async Task<IActionResult> PutGarages([FromRoute] int id, [FromBody] GarageDto garageDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != garages.Id)
+            if (id != garageDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(garages).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GaragesExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(await _garageService.UpdateGarage(id, garageDto));
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostGarages([FromBody] Garage garages)
+        public async Task<IActionResult> PostGarages([FromBody] GarageDto garageDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Garages.Add(garages);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetGarages", new { id = garages.Id }, garages);
+            return Ok(await _garageService.CreateGarage(garageDto));
         }
 
         [HttpDelete("{id}")]
@@ -98,21 +75,9 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var garages = await _context.Garages.FindAsync(id);
-            if (garages == null)
-            {
-                return NotFound();
-            }
+            await _garageService.DeleteGarage(id);
 
-            _context.Garages.Remove(garages);
-            await _context.SaveChangesAsync();
-
-            return Ok(garages);
-        }
-
-        private bool GaragesExists(int id)
-        {
-            return _context.Garages.Any(e => e.Id == id);
+            return Ok();
         }
     }
 }
