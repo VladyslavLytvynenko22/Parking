@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Parking.Data;
 using Parking.Domain.Dto;
 using Parking.Domain.Models;
@@ -36,6 +37,8 @@ namespace Parking.Core.Services
 
             OwnerDto ownerDtoFromDb = _mapper.Map<OwnerDto>(owner);
 
+            _dbContext.Entry(owner).State = EntityState.Added;
+
             await _dbContext.SaveChangesAsync();
 
             return ownerDtoFromDb;
@@ -57,6 +60,8 @@ namespace Parking.Core.Services
             
             Owner owner = _dbContext.Owners.Update(ownerFromDb)?.Entity;
 
+            _dbContext.Entry(owner).State = EntityState.Modified;
+
             await _dbContext.SaveChangesAsync();
 
             return _mapper.Map<OwnerDto>(owner);
@@ -71,6 +76,8 @@ namespace Parking.Core.Services
             }
 
             _dbContext.Owners.Remove(ownerFromDb);
+
+            _dbContext.Entry(ownerFromDb).State = EntityState.Deleted;
 
             await _dbContext.SaveChangesAsync();
         }

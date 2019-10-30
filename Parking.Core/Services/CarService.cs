@@ -36,6 +36,7 @@ namespace Parking.Core.Services
             Car car = _dbContext.Cars.Add(_mapper.Map<Car>(carDto))?.Entity;
             CarDto carDtoFromDb = _mapper.Map<CarDto>(car);
 
+            _dbContext.Entry(car).State = EntityState.Added;
             await _dbContext.SaveChangesAsync();
 
             return carDtoFromDb;
@@ -55,6 +56,8 @@ namespace Parking.Core.Services
             carFromDb.OwnerId = carFromDb.OwnerId != carFromDto.OwnerId ? carFromDto.OwnerId : carFromDb.OwnerId;
 
             Car car = _dbContext.Cars.Update(carFromDb)?.Entity;
+
+            _dbContext.Entry(car).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
 

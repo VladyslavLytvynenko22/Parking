@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Parking.Data;
 using Parking.Domain.Dto;
 using Parking.Domain.Models;
@@ -34,7 +35,8 @@ namespace Parking.Core.Services
         {
             Garage garage = _dbContext.Garages.Add(_mapper.Map<Garage>(garageDto))?.Entity;
             GarageDto garageDtoFromDb = _mapper.Map<GarageDto>(garage);
-            //Todo change status
+            _dbContext.Entry(garage).State = EntityState.Added;
+
             await _dbContext.SaveChangesAsync();
 
             return garageDtoFromDb;
@@ -50,11 +52,14 @@ namespace Parking.Core.Services
 
             Garage garageFromDto = _mapper.Map<Garage>(garageDto);
 
+            //Todo foreach
             garageFromDb.Area = garageFromDb.Area != garageFromDto.Area ? garageFromDb.Area : garageFromDto.Area;
             garageFromDb.Color = garageFromDb.Color != garageFromDto.Color ? garageFromDb.Color : garageFromDto.Color;
             garageFromDb.CarId = garageFromDb.CarId != garageFromDto.CarId ? garageFromDb.CarId : garageFromDto.CarId;
 
             Garage garage = _dbContext.Garages.Update(garageFromDb)?.Entity;
+
+            _dbContext.Entry(garage).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
 
@@ -70,6 +75,8 @@ namespace Parking.Core.Services
             }
 
             _dbContext.Garages.Remove(garageFromDb);
+
+            _dbContext.Entry(garageFromDb).State = EntityState.Deleted;
 
             await _dbContext.SaveChangesAsync();
         }
