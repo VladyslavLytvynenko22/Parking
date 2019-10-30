@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Parking.Core.Services;
-using Parking.Domain.Models;
+using Parking.Domain.Dto;
 using System.Threading.Tasks;
 
 namespace Parking.Web.Controllers
@@ -34,30 +34,30 @@ namespace Parking.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOwners([FromRoute] int id, [FromBody] Owner owner)
+        public async Task<IActionResult> PutOwners([FromRoute] int id, [FromBody] OwnerDto ownerDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != owner.Id)
+            if (id != ownerDto.Id)
             {
                 return BadRequest();
             }
 
-            return Ok(await _ownerService.UpdateOwner(id, owner));
+            return Ok(await _ownerService.UpdateOwner(id, ownerDto));
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostOwners([FromBody] Owner owner)
+        public async Task<IActionResult> PostOwners([FromBody] OwnerDto ownerDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(_ownerService.CreateOwner(owner));
+            return Ok(_ownerService.CreateOwner(ownerDto));
         }
 
         [HttpDelete("{id}")]

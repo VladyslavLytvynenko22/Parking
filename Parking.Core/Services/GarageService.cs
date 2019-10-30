@@ -1,4 +1,6 @@
-﻿using Parking.Data;
+﻿using AutoMapper;
+using Parking.Data;
+using Parking.Domain.Dto;
 using Parking.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -10,31 +12,35 @@ namespace Parking.Core.Services
     public class GarageService
     {
         private readonly ParkingDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public GarageService(ParkingDbContext dbContext)
+        public GarageService(ParkingDbContext dbContext, IMapper mapper)
         {
-            _dbContext = dbContext;
+            this._dbContext = dbContext;
+            this._mapper = mapper;
         }
 
-        public List<Garage> GetGarages()
+        public List<GarageDto> GetGarages()
         {
-            return _dbContext.Garages.ToList();
+            return _mapper.Map<List<GarageDto>>(_dbContext.Garages.ToList());
         }
 
-        public async Task<Garage> GetGarage(int id)
+        public async Task<GarageDto> GetGarage(int id)
         {
-            return await _dbContext.Garages.FindAsync(id);
+            return _mapper.Map<GarageDto>(await _dbContext.Garages.FindAsync(id));
         }
 
-        public async Task<Garage> CreateGarage(Garage garage)
+        public async Task<GarageDto> CreateGarage(GarageDto garageDto)
         {
-            _dbContext.Garages.Add(garage);
+            Garage garage = _dbContext.Garages.Add(_mapper.Map<Garage>(garageDto))?.Entity;
+            GarageDto garageDtoFromDb = _mapper.Map<GarageDto>(garage);
+            //Todo change status
             await _dbContext.SaveChangesAsync();
 
-            return garage;
+            return garageDtoFromDb;
         }
 
-        public async Task<Garage> UpdateGarage(int id, Garage garage)
+        public async Task<GarageDto> UpdateGarage(int id, GarageDto garageDto)
         {
             var garageFromDb = _dbContext.Garages.FirstOrDefault(g => g.Id == id);
             if (garageFromDb == null)
@@ -42,15 +48,17 @@ namespace Parking.Core.Services
                 throw new Exception($"Unable to update. Garage id: {id} not found.");
             }
 
-            garageFromDb.Area = garage.Area;
-            garageFromDb.CarId = garage.CarId;
-            garageFromDb.Color = garage.Color;
+            Garage garageFromDto = _mapper.Map<Garage>(garageDto);
 
-            _dbContext.Garages.Update(garageFromDb);
+            garageFromDb.Area = garageFromDb.Area != garageFromDto.Area ? garageFromDb.Area : garageFromDto.Area;
+            garageFromDb.Color = garageFromDb.Color != garageFromDto.Color ? garageFromDb.Color : garageFromDto.Color;
+            garageFromDb.CarId = garageFromDb.CarId != garageFromDto.CarId ? garageFromDb.CarId : garageFromDto.CarId;
+
+            Garage garage = _dbContext.Garages.Update(garageFromDb)?.Entity;
 
             await _dbContext.SaveChangesAsync();
 
-            return garageFromDb;
+            return _mapper.Map<GarageDto>(garage);
         }
 
         public async Task DeleteGarage(int id)
