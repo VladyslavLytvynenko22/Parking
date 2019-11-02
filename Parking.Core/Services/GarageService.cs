@@ -52,10 +52,9 @@ namespace Parking.Core.Services
 
             Garage garageFromDto = _mapper.Map<Garage>(garageDto);
 
-            //Todo foreach
-            garageFromDb.Area = garageFromDb.Area != garageFromDto.Area ? garageFromDb.Area : garageFromDto.Area;
-            garageFromDb.Color = garageFromDb.Color != garageFromDto.Color ? garageFromDb.Color : garageFromDto.Color;
-            garageFromDb.CarId = garageFromDb.CarId != garageFromDto.CarId ? garageFromDb.CarId : garageFromDto.CarId;
+            garageFromDb.Area = garageFromDb.Area != garageFromDto.Area ? garageFromDto.Area : garageFromDb.Area;
+            garageFromDb.Color = garageFromDb.Color != garageFromDto.Color ? garageFromDto.Color : garageFromDb.Color;
+            garageFromDb.CarId = garageFromDb.CarId != garageFromDto.CarId ? garageFromDto.CarId : garageFromDb.CarId;
 
             Garage garage = _dbContext.Garages.Update(garageFromDb)?.Entity;
 

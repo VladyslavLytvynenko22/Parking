@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Parking.Data;
 using Parking.Domain.Dto;
-﻿using Microsoft.EntityFrameworkCore;
 using Parking.Domain.Models;
 using System;
 using System.Collections.Generic;

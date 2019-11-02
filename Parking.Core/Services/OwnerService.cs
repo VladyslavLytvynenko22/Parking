@@ -54,9 +54,9 @@ namespace Parking.Core.Services
 
             Owner ownerFromDto = _mapper.Map<Owner>(ownerDto);
 
-            ownerFromDb.FirstName = ownerFromDb.FirstName != ownerFromDto.FirstName ? ownerFromDb.FirstName : ownerFromDto.FirstName;
-            ownerFromDb.LastName = ownerFromDb.LastName != ownerFromDto.LastName ? ownerFromDb.LastName : ownerFromDto.LastName;
-            ownerFromDb.DateOfBirth = ownerFromDb.DateOfBirth != ownerFromDto.DateOfBirth ? ownerFromDb.DateOfBirth : ownerFromDto.DateOfBirth;
+            ownerFromDb.FirstName = ownerFromDb.FirstName != ownerFromDto.FirstName ? ownerFromDto.FirstName : ownerFromDb.FirstName;
+            ownerFromDb.LastName = ownerFromDb.LastName != ownerFromDto.LastName ? ownerFromDto.LastName : ownerFromDb.LastName;
+            ownerFromDb.DateOfBirth = ownerFromDb.DateOfBirth != ownerFromDto.DateOfBirth ? ownerFromDto.DateOfBirth : ownerFromDb.DateOfBirth;
             
             Owner owner = _dbContext.Owners.Update(ownerFromDb)?.Entity;
 
