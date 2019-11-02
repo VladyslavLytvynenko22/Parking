@@ -2,77 +2,220 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/JavaScript.js"></script>
+    <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="js/JavaScriptCar.js"></script>
+    <script type="text/javascript" src="js/JavaScriptGarage.js"></script>
+    <script type="text/javascript" src="js/JavaScriptOwner.js"></script>
     <link rel="stylesheet" type="text/css" href="css/StyleSheet.css" />
     <title>Parking</title>
 </head>
 <body>
-    <div class="title">
-        <div class="DivForTable">
-            <table id="TableGetAllCars">
-                <caption>Table get all cars</caption>
-                <tr>
-                    <th>Id</th>
-                    <th>Brand</th>
-                    <th>Car plate</th>
-                    <th>Owner</th>
-                </tr>
-            </table>
-        </div>
-        <div class="btnsDiv">
-            <input value="Get all cars" type="button" id="btnGetAllCars" />
-        </div>
-    </div>
+    <div class="mainDiv">
+        <div class="mainCarDiv">
+            <div class="title">
+                <div class="DivForTable">
+                    <table id="TableGetAllCars">
+                        <caption>Table get all cars</caption>
+                        <tr>
+                            <th>Id</th>
+                            <th>Brand</th>
+                            <th>Car plate</th>
+                            <th>Owner</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="btnsDiv">
+                    <input value="Get all cars" type="button" id="btnGetAllCars" />
+                </div>
+            </div>
 
-    <div class="title">
-        <div class="divForInputValue">
-            <lable class="LableForInput" for="enterIdCarForGetOrUpdateOrDeleteCar">Id: </lable>
-            <input type="number" id="enterIdCarForGetOrUpdateOrDeleteCar" />
-        </div>
-        <div class="btnsDiv">
-            <input value="Get car" type="button" id="btnGetCar" />
-            <input value="Delete car" type="button" id="btnDeleteCar" />
-        </div>
-        <div class="divForInputValue">
-            <lable class="LableForInput" for="enterBrandForGetOrUpdateOrDeleteCar">Brand: </lable>
-            <input type="text" id="enterBrandForGetOrUpdateOrDeleteCar" />
-        </div>
-        <div class="divForInputValue">
-            <lable class="LableForInput" for="enterCarPlateForGetOrUpdateOrDeleteCar">Car plate: </lable>
-            <input type="text" id="enterCarPlateForGetOrUpdateOrDeleteCar" />
-        </div>
-        <div class="divForInputValue">
-            <lable class="LableForInput" for="enterOwnerIdForGetOrUpdateOrDeleteCar">Owner: </lable>
-            <input type="text" id="enterOwnerIdForGetOrUpdateOrDeleteCar" />
-        </div>
-        <div class="btnsDiv">
-            <input value="Update car" type="button" id="btnUpdateCar" />
-        </div>
-    </div>
+            <div class="title">
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterIdCarForGetOrUpdateOrDeleteCar">Id: </lable>
+                    <input type="number" id="enterIdCarForGetOrUpdateOrDeleteCar" />
+                </div>
+                <div class="btnsDiv">
+                    <input value="Get car" type="button" id="btnGetCar" />
+                    <input value="Delete car" type="button" id="btnDeleteCar" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterBrandForGetOrUpdateOrDeleteCar">Brand: </lable>
+                    <input type="text" id="enterBrandForGetOrUpdateOrDeleteCar" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterCarPlateForGetOrUpdateOrDeleteCar">Car plate: </lable>
+                    <input type="text" id="enterCarPlateForGetOrUpdateOrDeleteCar" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterOwnerIdForGetOrUpdateOrDeleteCar">Owner: </lable>
+                    <input type="text" id="enterOwnerIdForGetOrUpdateOrDeleteCar" />
+                </div>
+                <div class="btnsDiv">
+                    <input value="Update car" type="button" id="btnUpdateCar" />
+                </div>
+            </div>
 
-    <div class="title">
-        <div id="CreateCarBtnDiv">
-            <div class="divForInputValue">
-                <lable class="LableForInput" for="enterIdCarForCreateCar">Id: </lable>
-                <input type="number" id="enterIdCarForCreateCar" readonly />
-            </div>
-            <div class="divForInputValue">
-                <lable class="LableForInput" for="enterBrandForCreateCar">Brand: </lable>
-                <input type="text" id="enterBrandForCreateCar" />
-            </div>
-            <div class="divForInputValue">
-                <lable class="LableForInput" for="enterCarPlateForCreateCar">Car plate: </lable>
-                <input type="text" id="enterCarPlateForCreateCar" />
-            </div>
-            <div class="divForInputValue">
-                <lable class="LableForInput" for="enterOwnerIdForCreateCar">Owner: </lable>
-                <input type="text" id="enterOwnerIdForCreateCar" />
+            <div class="title">
+                <div id="CreateCarBtnDiv">
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterIdCarForCreateCar">Id: </lable>
+                        <input type="number" id="enterIdCarForCreateCar" readonly />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterBrandForCreateCar">Brand: </lable>
+                        <input type="text" id="enterBrandForCreateCar" />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterCarPlateForCreateCar">Car plate: </lable>
+                        <input type="text" id="enterCarPlateForCreateCar" />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterOwnerIdForCreateCar">Owner: </lable>
+                        <input type="text" id="enterOwnerIdForCreateCar" />
+                    </div>
+                </div>
+                <div class="btnsDiv">
+                    <input value="Create car" type="button" id="btnCreateCar" />
+                </div>
             </div>
         </div>
-        <div class="btnsDiv">
-            <input value="Create car" type="button" id="btnCreateCar" />
+        <div class="mainGarageDiv">
+            <div class="title">
+                <div class="DivForTable">
+                    <table id="TableGetAllGarages">
+                        <caption>Table get all garages</caption>
+                        <tr>
+                            <th>Id</th>
+                            <th>Area</th>
+                            <th>Color</th>
+                            <th>Car</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="btnsDiv">
+                    <input value="Get all garages" type="button" id="btnGetAllGarages" />
+                </div>
+            </div>
+
+            <div class="title">
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterIdGarageForGetOrUpdateOrDeleteGarage">Id: </lable>
+                    <input type="number" id="enterIdGarageForGetOrUpdateOrDeleteGarage" />
+                </div>
+                <div class="btnsDiv">
+                    <input value="Get garage" type="button" id="btnGetGarage" />
+                    <input value="Delete garage" type="button" id="btnDeleteGarage" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterAreaForGetOrUpdateOrDeleteGarage">Area: </lable>
+                    <input type="text" id="enterAreaForGetOrUpdateOrDeleteGarage" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterColorForGetOrUpdateOrDeleteGarage">Color: </lable>
+                    <input type="text" id="enterColorForGetOrUpdateOrDeleteGarage" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterCarIdForGetOrUpdateOrDeleteGarage">Car: </lable>
+                    <input type="text" id="enterCarIdForGetOrUpdateOrDeleteGarage" />
+                </div>
+                <div class="btnsDiv">
+                    <input value="Update garage" type="button" id="btnUpdateGarage" />
+                </div>
+            </div>
+
+            <div class="title">
+                <div id="CreateGarageBtnDiv">
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterIdGarageForCreateGarage">Id: </lable>
+                        <input type="number" id="enterIdGarageForCreateGarage" readonly />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterAreaForCreateGarage">Area: </lable>
+                        <input type="text" id="enterAreaForCreateGarage" />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterColorForCreateGarage">Color: </lable>
+                        <input type="text" id="enterColorForCreateGarage" />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterCarIdForCreateGarage">Car: </lable>
+                        <input type="text" id="enterCarIdForCreateGarage" />
+                    </div>
+                </div>
+                <div class="btnsDiv">
+                    <input value="Create garage" type="button" id="btnCreateGarage" />
+                </div>
+            </div>
         </div>
+        <div class="mainOwnerDiv">
+            <div class="title">
+                <div class="DivForTable">
+                    <table id="TableGetAllOwners">
+                        <caption>Table get all owners</caption>
+                        <tr>
+                            <th>Id</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Date Of Birth</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="btnsDiv">
+                    <input value="Get all owners" type="button" id="btnGetAllOwners" />
+                </div>
+            </div>
+
+            <div class="title">
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterIdOwnerForGetOrUpdateOrDeleteOwner">Id: </lable>
+                    <input type="number" id="enterIdOwnerForGetOrUpdateOrDeleteOwner" />
+                </div>
+                <div class="btnsDiv">
+                    <input value="Get owner" type="button" id="btnGetOwner" />
+                    <input value="Delete owner" type="button" id="btnDeleteOwner" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterFirstNameForGetOrUpdateOrDeleteOwner">First Name: </lable>
+                    <input type="text" id="enterFirstNameForGetOrUpdateOrDeleteOwner" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterLastNameForGetOrUpdateOrDeleteOwner">Last Name: </lable>
+                    <input type="text" id="enterLastNameForGetOrUpdateOrDeleteOwner" />
+                </div>
+                <div class="divForInputValue">
+                    <lable class="LableForInput" for="enterDateOfBirthForGetOrUpdateOrDeleteOwner">Date Of Birth: </lable>
+                    <input type="text" id="enterDateOfBirthForGetOrUpdateOrDeleteOwner" />
+                </div>
+                <div class="btnsDiv">
+                    <input value="Update owner" type="button" id="btnUpdateOwner" />
+                </div>
+            </div>
+
+            <div class="title">
+                <div id="CreateOwnerBtnDiv">
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterIdOwnerForCreateOwner">Id: </lable>
+                        <input type="number" id="enterIdOwnerForCreateOwner" readonly />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterFirstNameForCreateOwner">First Name: </lable>
+                        <input type="text" id="enterFirstNameForCreateOwner" />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterLastNameForCreateOwner">Last Name: </lable>
+                        <input type="text" id="enterLastNameForCreateOwner" />
+                    </div>
+                    <div class="divForInputValue">
+                        <lable class="LableForInput" for="enterDateOfBirthForCreateOwner">Date Of Birth: </lable>
+                        <input type="text" id="enterDateOfBirthForCreateOwner" />
+                    </div>
+                </div>
+                <div class="btnsDiv">
+                    <input value="Create owner" type="button" id="btnCreateOwner" />
+                </div>
+            </div>
+        </div>
+        <div class="result" id="result"></div>
     </div>
 </body>
 </html>

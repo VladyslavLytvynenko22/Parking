@@ -41,3 +41,28 @@ TD, TH {
 TH {
     background: #b0e0e6;
 }
+
+table caption {
+    font-size: 23px;
+}
+
+.mainCarDiv, .mainGarageDiv, .mainOwnerDiv, .result {
+    clear: both;
+    float: left;
+    width: 100%;
+    height: auto;
+    text-align: center;
+}
+
+.result {
+    flex: 1;
+}
+
+.mainDiv {
+    width: 100%;
+    display: grid;
+}
+
+body {
+    background: radial-gradient(40% 50%, #FAECD5, #CAE4D8);
+}
