@@ -4,7 +4,7 @@ namespace Parking.Domain.Dto
 {
     public class CarDto
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required]
         public string Brand { get; set; }

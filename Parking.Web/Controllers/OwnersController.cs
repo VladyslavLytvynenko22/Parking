@@ -30,7 +30,14 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _ownerService.GetOwner(id));
+            OwnerDto owner = await _ownerService.GetOwner(id);
+
+            if (owner == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(owner);
         }
 
         [HttpPut("{id}")]
@@ -57,7 +64,7 @@ namespace Parking.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(_ownerService.CreateOwner(ownerDto));
+            return Ok(await _ownerService.CreateOwner(ownerDto));
         }
 
         [HttpDelete("{id}")]

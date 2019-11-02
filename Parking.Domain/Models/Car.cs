@@ -5,7 +5,7 @@ namespace Parking.Domain.Models
 {
     public class Car
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required]
         public string Brand { get; set; }

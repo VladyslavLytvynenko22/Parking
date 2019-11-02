@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Parking.Data;
 using Parking.Domain.Dto;
 using Parking.Domain.Models;
@@ -36,6 +37,8 @@ namespace Parking.Core.Services
 
             OwnerDto ownerDtoFromDb = _mapper.Map<OwnerDto>(owner);
 
+            _dbContext.Entry(owner).State = EntityState.Added;
+
             await _dbContext.SaveChangesAsync();
 
             return ownerDtoFromDb;
@@ -51,11 +54,13 @@ namespace Parking.Core.Services
 
             Owner ownerFromDto = _mapper.Map<Owner>(ownerDto);
 
-            ownerFromDb.FirstName = ownerFromDb.FirstName != ownerFromDto.FirstName ? ownerFromDb.FirstName : ownerFromDto.FirstName;
-            ownerFromDb.LastName = ownerFromDb.LastName != ownerFromDto.LastName ? ownerFromDb.LastName : ownerFromDto.LastName;
-            ownerFromDb.DateOfBirth = ownerFromDb.DateOfBirth != ownerFromDto.DateOfBirth ? ownerFromDb.DateOfBirth : ownerFromDto.DateOfBirth;
+            ownerFromDb.FirstName = ownerFromDb.FirstName != ownerFromDto.FirstName ? ownerFromDto.FirstName : ownerFromDb.FirstName;
+            ownerFromDb.LastName = ownerFromDb.LastName != ownerFromDto.LastName ? ownerFromDto.LastName : ownerFromDb.LastName;
+            ownerFromDb.DateOfBirth = ownerFromDb.DateOfBirth != ownerFromDto.DateOfBirth ? ownerFromDto.DateOfBirth : ownerFromDb.DateOfBirth;
             
             Owner owner = _dbContext.Owners.Update(ownerFromDb)?.Entity;
+
+            _dbContext.Entry(owner).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
 
@@ -71,6 +76,8 @@ namespace Parking.Core.Services
             }
 
             _dbContext.Owners.Remove(ownerFromDb);
+
+            _dbContext.Entry(ownerFromDb).State = EntityState.Deleted;
 
             await _dbContext.SaveChangesAsync();
         }

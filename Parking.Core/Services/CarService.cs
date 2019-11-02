@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Parking.Data;
 using Parking.Domain.Dto;
 using Parking.Domain.Models;
@@ -35,6 +36,7 @@ namespace Parking.Core.Services
             Car car = _dbContext.Cars.Add(_mapper.Map<Car>(carDto))?.Entity;
             CarDto carDtoFromDb = _mapper.Map<CarDto>(car);
 
+            _dbContext.Entry(car).State = EntityState.Added;
             await _dbContext.SaveChangesAsync();
 
             return carDtoFromDb;
@@ -55,6 +57,8 @@ namespace Parking.Core.Services
 
             Car car = _dbContext.Cars.Update(carFromDb)?.Entity;
 
+            _dbContext.Entry(car).State = EntityState.Modified;
+
             await _dbContext.SaveChangesAsync();
 
             return _mapper.Map<CarDto>(car);
@@ -69,6 +73,7 @@ namespace Parking.Core.Services
             }
 
             _dbContext.Cars.Remove(car);
+            _dbContext.Entry(car).State = EntityState.Deleted;
 
             await _dbContext.SaveChangesAsync();
         }
