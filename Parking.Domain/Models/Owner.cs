@@ -6,7 +6,7 @@ namespace Parking.Domain.Models
 {
     public class Owner
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required]
         public string FirstName { get; set; }
