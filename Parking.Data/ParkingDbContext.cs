@@ -24,14 +24,16 @@ namespace Parking.Data
             {
                 entity.HasOne(d => d.Owner)
                     .WithMany(p => p.Cars)
-                    .HasForeignKey(d => d.OwnerId);
+                    .HasForeignKey(d => d.OwnerId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Garage>(entity =>
             {
                 entity.HasOne(d => d.Car)
                     .WithMany(p => p.Garages)
-                    .HasForeignKey(d => d.CarId);
+                    .HasForeignKey(d => d.CarId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
         }
     }
