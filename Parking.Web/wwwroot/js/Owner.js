@@ -1,4 +1,4 @@
-﻿var HeadersOfColumnsOwner =
+﻿var headersOfColumnsOwner =
     "<tr>" +
     "<th>Id</th>" +
     "<th>First Name</th>" +
@@ -6,7 +6,7 @@
     "<th>Date Of Birth</th>" +
     "</tr>";
 
-function ParseOwnerToTr(owner) {
+function parseOwnerToTr(owner) {
     return "<tr>" +
         "<td id='Id'>" + owner.id + "</td>" +
         "<td id='FirstName'>" + owner.firstName + "</td>" +
@@ -15,27 +15,35 @@ function ParseOwnerToTr(owner) {
         "</tr>";
 }
 
-function SetInputForGetOrUpdateOrDeleteOwner(firstName, lastName, dateOfBirth) {
+function setInputForGetOrUpdateOrDeleteOwner(firstName, lastName, dateOfBirth) {
     $('#enterFirstNameForGetOrUpdateOrDeleteOwner').val(firstName);
     $('#enterLastNameForGetOrUpdateOrDeleteOwner').val(lastName);
-    $('#enterDateOfBirthForGetOrUpdateOrDeleteOwner').val(dateOfBirth);
+    document.querySelector('#enterDateOfBirthForGetOrUpdateOrDeleteOwner').valueAsDate = dateOfBirth;
 }
 
-function GetAllOwners() {
+function getAllOwners() {
     $('*').css({ 'cursor': 'wait' });
     $.ajax({
         type: "GET",
-        url: "/api/Owners",
+        url: "/api/Owners/getowners",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
+        beforeSend: function (xhr) {
+            var token = sessionStorage.getItem(tokenKey);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
         success: function (data) {
             $("#TableGetAllOwners tr").remove();
-            var rows = HeadersOfColumnsOwner;
+            var rows = headersOfColumnsOwner;
             $.each(data, function (i, item) {
-                rows += ParseOwnerToTr(item);
+                rows += parseOwnerToTr(item);
             });
             $('#TableGetAllOwners').append(rows);
+            clearErrorMessage();
             console.log(data);
+        },
+        fail: function (xhr, status, error) {
+            showErrorMessage(xhr, status, error);
         },
         error: function (xhr, status, error) {
             showErrorMessage(xhr, status, error);
@@ -46,24 +54,31 @@ function GetAllOwners() {
     });
 }
 
-function GetGar() {
+function getOwner() {
     var id = $('#enterIdOwnerForGetOrUpdateOrDeleteOwner').val();
     if (id > 0) {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "GET",
-            url: "/api/Owners/" + id,
+            url: "/api/Owners/getowner/" + id,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
             success: function (owner) {
                 if (owner != null) {
-                    SetInputForGetOrUpdateOrDeleteOwner(owner.firstName, owner.lastName, owner.dateOfBirth);
+                    setInputForGetOrUpdateOrDeleteOwner(owner.firstName, owner.lastName, new Date(owner.dateOfBirth));
+                    clearErrorMessage();
                     console.log(owner);
                 }
             },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
+            },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
-                SetInputForGetOrUpdateOrDeleteOwner("", "", "");
             },
             complete: function (data) {
                 $('*').css({ 'cursor': 'default' });
@@ -72,7 +87,7 @@ function GetGar() {
     } else alert("Enter all empty field!");
 }
 
-function UpdateOwner() {
+function updateOwner() {
     var id = $('#enterIdOwnerForGetOrUpdateOrDeleteOwner').val();
     var firstName = $('#enterFirstNameForGetOrUpdateOrDeleteOwner').val();
     var lastName = $('#enterLastNameForGetOrUpdateOrDeleteOwner').val();
@@ -89,12 +104,21 @@ function UpdateOwner() {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "PUT",
-            url: "/api/Owners/" + id,
+            url: "/api/Owners/updateowner/" + id,
             dataType: "json",
             data: dataToPut,
             contentType: "application/json; charset=utf-8",
-            success: function () {
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (result) {
                 alert("Update OK!");
+                clearErrorMessage();
+                console.log(result);
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
@@ -106,17 +130,26 @@ function UpdateOwner() {
     } else alert("Enter all empty field!");
 }
 
-function DeleteOwner() {
+function deleteOwner() {
     var id = $('#enterIdOwnerForGetOrUpdateOrDeleteOwner').val();
     if (id > 0) {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "DELETE",
-            url: "/api/Owners/" + id,
+            url: "/api/Owners/deleteowner/" + id,
             contentType: "application/json; charset=utf-8",
-            success: function () {
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (result) {
                 alert('Delete OK!');
-                SetInputForGetOrUpdateOrDeleteOwner("", "", "");
+                setInputForGetOrUpdateOrDeleteOwner("", "", "");
+                clearErrorMessage();
+                console.log(result);
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
@@ -128,7 +161,7 @@ function DeleteOwner() {
     } else alert("Enter all empty field!");
 }
 
-function CreateOwner() {
+function createOwner() {
     $('*').css({ 'cursor': 'wait' });
     var firstName = $('#enterFirstNameForCreateOwner').val();
     var lastName = $('#enterLastNameForCreateOwner').val();
@@ -142,16 +175,24 @@ function CreateOwner() {
     });
     $.ajax({
         type: "POST",
-        url: "/api/Owners",
+        url: "/api/Owners/createowner",
         dataType: "json",
         data: dataToPost,
         contentType: "application/json; charset=utf-8",
+        beforeSend: function (xhr) {
+            var token = sessionStorage.getItem(tokenKey);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
         success: function (owner) {
-            console.log(owner);
             if (owner != null) {
                 $('#enterIdOwnerForCreateOwner').val(owner.id);
             }
             alert("Create OK!");
+            clearErrorMessage();
+            console.log(owner);
+        },
+        fail: function (xhr, status, error) {
+            showErrorMessage(xhr, status, error);
         },
         error: function (xhr, status, error) {
             showErrorMessage(xhr, status, error);
@@ -163,21 +204,21 @@ function CreateOwner() {
 }
 
 $(document).on("click", "#btnGetAllOwners", function () {
-    GetAllOwners();
+    getAllOwners();
 });
 
 $(document).on("click", "#btnGetOwner", function () {
-    GetGar();
+    getOwner();
 });
 
 $(document).on("click", "#btnUpdateOwner", function () {
-    UpdateOwner();
+    updateOwner();
 });
 
 $(document).on("click", "#btnDeleteOwner", function () {
-    DeleteOwner();
+    deleteOwner();
 });
 
 $(document).on("click", "#btnCreateOwner", function () {
-    CreateOwner();
+    createOwner();
 });

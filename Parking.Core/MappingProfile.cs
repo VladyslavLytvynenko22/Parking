@@ -4,7 +4,7 @@ using Parking.Domain.Models;
 
 namespace Parking.Core
 {
-    class MappingProfile : Profile
+    internal class MappingProfile : Profile
     {
         public MappingProfile()
         {
@@ -16,6 +16,9 @@ namespace Parking.Core
 
             CreateMap<Owner, OwnerDto>();
             CreateMap<OwnerDto, Owner>();
+
+            CreateMap<Person, PersonDto>();
+            CreateMap<PersonDto, Person>();
         }
     }
 }
