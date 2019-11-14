@@ -17,6 +17,7 @@ namespace Parking.Data
         public virtual DbSet<Car> Cars { get; set; }
         public virtual DbSet<Garage> Garages { get; set; }
         public virtual DbSet<Owner> Owners { get; set; }
+        public virtual DbSet<Person> Persons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

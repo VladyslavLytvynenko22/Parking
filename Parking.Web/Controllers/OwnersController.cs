@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Parking.Core.Services;
 using Parking.Domain.Dto;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace Parking.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OwnersController : ControllerBase
     {
         private readonly OwnerService _ownerService;
@@ -16,14 +18,14 @@ namespace Parking.Web.Controllers
             _ownerService = ownerService;
         }
 
-        [HttpGet]
+        [Route("getowners")]
         public IActionResult GetOwners()
         {
             return Ok(_ownerService.GetOwners());
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOwners([FromRoute] int id)
+        [Route("getowner/{id}")]
+        public async Task<IActionResult> GetOwner([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -40,8 +42,8 @@ namespace Parking.Web.Controllers
             return Ok(owner);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOwners([FromRoute] int id, [FromBody] OwnerDto ownerDto)
+        [Route("updateowner/{id}")]
+        public async Task<IActionResult> PutOwner([FromRoute] int id, [FromBody] OwnerDto ownerDto)
         {
             if (!ModelState.IsValid)
             {
@@ -56,8 +58,8 @@ namespace Parking.Web.Controllers
             return Ok(await _ownerService.UpdateOwner(id, ownerDto));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostOwners([FromBody] OwnerDto ownerDto)
+        [Route("createowner")]
+        public async Task<IActionResult> PostOwner([FromBody] OwnerDto ownerDto)
         {
             if (!ModelState.IsValid)
             {
@@ -67,8 +69,8 @@ namespace Parking.Web.Controllers
             return Ok(await _ownerService.CreateOwner(ownerDto));
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOwners([FromRoute] int id)
+        [Route("deleteowner/{id}")]
+        public async Task<IActionResult> DeleteOwner([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
