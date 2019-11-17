@@ -36,6 +36,12 @@ function submRegistration(e) {
 
 function submitLogin(e) {
     e.preventDefault();
+    var dataToPut = JSON.stringify({
+        id: null,
+        login: $('#emailLogin').val(),
+        password: $('#passwordLogin').val(),
+        role: null
+    });
     var loginData = {
         grant_type: 'password',
         username: $('#emailLogin').val(),
@@ -44,7 +50,9 @@ function submitLogin(e) {
     $.ajax({
         type: 'POST',
         url: '/api/Account/token',
-        data: loginData,
+        data: dataToPut,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function (data) {
             $('.userName').text(data.username);
             $('.userInfo').css('display', 'block');

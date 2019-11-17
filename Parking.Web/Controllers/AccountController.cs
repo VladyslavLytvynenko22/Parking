@@ -27,23 +27,25 @@ namespace Parking.Web.Controllers
 
         [AllowAnonymous]
         [Route("token")]
-        public async Task Token()
+        public async Task<IActionResult> Token(PersonDto personDto)
         {
-            var identity = GetIdentity(_personService.GetPerson(Request.Form["username"], Request.Form["password"]));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var identity = GetIdentity(await _personService.GetPerson(personDto));
             if (identity == null)
             {
-                Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid username or password.");
-                return;
+                return NotFound();
             }
 
             var now = DateTime.UtcNow;
-            // создаем JWT-токен
+
             var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,
                     notBefore: now,
-                    claims: identity.Claims,
+                    claims: identity.Result.Claims,
                     expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
@@ -51,12 +53,10 @@ namespace Parking.Web.Controllers
             var response = new
             {
                 access_token = encodedJwt,
-                username = identity.Name
+                username = identity.Result.Name
             };
 
-            // сериализация ответа
-            Response.ContentType = "application/json";
-            await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+           return Ok(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 
         [Route("checkAuthorize")]
@@ -65,7 +65,7 @@ namespace Parking.Web.Controllers
             return Ok();
         }
 
-        private ClaimsIdentity GetIdentity(PersonDto personDto)
+        private async Task<ClaimsIdentity> GetIdentity(PersonDto personDto)
         {
             if (personDto != null)
             {
@@ -80,7 +80,6 @@ namespace Parking.Web.Controllers
                 return claimsIdentity;
             }
 
-            // если пользователя не найдено
             return null;
         }
     }

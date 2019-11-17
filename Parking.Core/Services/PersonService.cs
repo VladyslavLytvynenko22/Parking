@@ -31,9 +31,9 @@ namespace Parking.Core.Services
             return _mapper.Map<PersonDto>(await _dbContext.Persons.FindAsync(id));
         }
 
-        public PersonDto GetPerson(string login, string password)
+        public async Task<PersonDto> GetPerson(PersonDto personDto)
         {
-            return _mapper.Map<PersonDto>(_dbContext.Persons.FirstOrDefault(x => x.Login == login && x.Password == password));
+            return _mapper.Map<PersonDto>(_dbContext.Persons.FirstOrDefault(x => x.Login == personDto.Login && x.Password == personDto.Password));
         }
 
         public async Task<PersonDto> CreatePerson(PersonDto personDto)

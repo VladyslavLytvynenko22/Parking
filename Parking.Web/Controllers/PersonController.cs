@@ -25,14 +25,14 @@ namespace Parking.Web.Controllers
         }
 
         [Route("getperson")]
-        public async Task<IActionResult> GetPerson()
+        public async Task<IActionResult> GetPerson(PersonDto personDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var person = _personService.GetPerson(Request.Form["username"], Request.Form["password"]);
+            var person = _personService.GetPerson(personDto);
 
             if (person == null)
             {
