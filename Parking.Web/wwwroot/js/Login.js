@@ -42,11 +42,7 @@ function submitLogin(e) {
         password: $('#passwordLogin').val(),
         role: null
     });
-    var loginData = {
-        grant_type: 'password',
-        username: $('#emailLogin').val(),
-        password: $('#passwordLogin').val()
-    };
+
     $.ajax({
         type: 'POST',
         url: '/api/Account/token',
