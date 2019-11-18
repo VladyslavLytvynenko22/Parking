@@ -1,4 +1,4 @@
-﻿var HeadersOfColumnsGarage =
+﻿var headersOfColumnsGarage =
     "<tr>" +
     "<th>Id</th>" +
     "<th>Area</th>" +
@@ -6,7 +6,7 @@
     "<th>Car</th>" +
     "</tr>";
 
-function ParseGarageToTr(garage) {
+function parseGarageToTr(garage) {
     return "<tr>" +
         "<td id='Id'>" + garage.id + "</td>" +
         "<td id='Area'>" + garage.area + "</td>" +
@@ -15,27 +15,35 @@ function ParseGarageToTr(garage) {
         "</tr>";
 }
 
-function SetInputForGetOrUpdateOrDeleteGarage(area, color, carId) {
+function setInputForGetOrUpdateOrDeleteGarage(area, color, carId) {
     $('#enterAreaForGetOrUpdateOrDeleteGarage').val(area);
     $('#enterColorForGetOrUpdateOrDeleteGarage').val(color);
     $('#enterCarIdForGetOrUpdateOrDeleteGarage').val(carId);
 }
 
-function GetAllGarages() {
+function getAllGarages() {
     $('*').css({ 'cursor': 'wait' });
     $.ajax({
         type: "GET",
-        url: "/api/Garages",
+        url: "/api/Garages/getgarages",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
+        beforeSend: function (xhr) {
+            var token = sessionStorage.getItem(tokenKey);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
         success: function (data) {
             $("#TableGetAllGarages tr").remove();
-            var rows = HeadersOfColumnsGarage;
+            var rows = headersOfColumnsGarage;
             $.each(data, function (i, item) {
-                rows += ParseGarageToTr(item);
+                rows += parseGarageToTr(item);
             });
             $('#TableGetAllGarages').append(rows);
+            clearErrorMessage();
             console.log(data);
+        },
+        fail: function (xhr, status, error) {
+            showErrorMessage(xhr, status, error);
         },
         error: function (xhr, status, error) {
             showErrorMessage(xhr, status, error);
@@ -46,24 +54,31 @@ function GetAllGarages() {
     });
 }
 
-function GetGarage() {
+function getGarage() {
     var id = $('#enterIdGarageForGetOrUpdateOrDeleteGarage').val();
     if (id > 0) {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "GET",
-            url: "/api/Garages/" + id,
+            url: "/api/Garages/getgarage/" + id,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
             success: function (garage) {
                 if (garage != null) {
-                    SetInputForGetOrUpdateOrDeleteGarage(garage.area, garage.color, garage.carId);
-                    console.log(garage);
+                    setInputForGetOrUpdateOrDeleteGarage(garage.area, garage.color, garage.carId);
+                    clearErrorMessage();
                 }
+                console.log(garage);
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
-                SetInputForGetOrUpdateOrDeleteGarage("", "", "");
             },
             complete: function (data) {
                 $('*').css({ 'cursor': 'default' });
@@ -72,7 +87,7 @@ function GetGarage() {
     } else alert("Enter all empty field!");
 }
 
-function UpdateGarage() {
+function updateGarage() {
     var id = $('#enterIdGarageForGetOrUpdateOrDeleteGarage').val();
     var area = $('#enterAreaForGetOrUpdateOrDeleteGarage').val();
     var color = $('#enterColorForGetOrUpdateOrDeleteGarage').val();
@@ -89,12 +104,21 @@ function UpdateGarage() {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "PUT",
-            url: "/api/Garages/" + id,
+            url: "/api/Garages/updategarage/" + id,
             dataType: "json",
             data: dataToPut,
             contentType: "application/json; charset=utf-8",
-            success: function () {
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (result) {
                 alert("Update OK!");
+                clearErrorMessage();
+                console.log(result);
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
@@ -106,17 +130,26 @@ function UpdateGarage() {
     } else alert("Enter all empty field!");
 }
 
-function DeleteGarage() {
+function deleteGarage() {
     var id = $('#enterIdGarageForGetOrUpdateOrDeleteGarage').val();
     if (id > 0) {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "DELETE",
-            url: "/api/Garages/" + id,
+            url: "/api/Garages/deletegarage/" + id,
             contentType: "application/json; charset=utf-8",
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
             success: function (result) {
                 alert('Delete OK!');
-                SetInputForGetOrUpdateOrDeleteGarage("", "", "");
+                setInputForGetOrUpdateOrDeleteGarage("", "", "");
+                clearErrorMessage();
+                console.log(result);
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
@@ -128,7 +161,7 @@ function DeleteGarage() {
     } else alert("Enter all empty field!");
 }
 
-function CreateGarage() {
+function createGarage() {
     $('*').css({ 'cursor': 'wait' });
     var area = $('#enterAreaForCreateGarage').val();
     var color = $('#enterColorForCreateGarage').val();
@@ -142,16 +175,24 @@ function CreateGarage() {
     });
     $.ajax({
         type: "POST",
-        url: "/api/Garages",
+        url: "/api/Garages/creategarage",
         dataType: "json",
         data: dataToPost,
         contentType: "application/json; charset=utf-8",
+        beforeSend: function (xhr) {
+            var token = sessionStorage.getItem(tokenKey);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
         success: function (garage) {
-            console.log(garage);
             if (garage != null) {
                 $('#enterIdGarageForCreateGarage').val(garage.id);
             }
+            clearErrorMessage();
             alert("Create OK!");
+            console.log(garage);
+        },
+        fail: function (xhr, status, error) {
+            showErrorMessage(xhr, status, error);
         },
         error: function (xhr, status, error) {
             showErrorMessage(xhr, status, error);
@@ -163,21 +204,21 @@ function CreateGarage() {
 }
 
 $(document).on("click", "#btnGetAllGarages", function () {
-    GetAllGarages();
+    getAllGarages();
 });
 
 $(document).on("click", "#btnGetGarage", function () {
-    GetGarage();
+    getGarage();
 });
 
 $(document).on("click", "#btnUpdateGarage", function () {
-    UpdateGarage();
+    updateGarage();
 });
 
 $(document).on("click", "#btnDeleteGarage", function () {
-    DeleteGarage();
+    deleteGarage();
 });
 
 $(document).on("click", "#btnCreateGarage", function () {
-    CreateGarage();
+    createGarage();
 });

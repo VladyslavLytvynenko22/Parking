@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Parking.Core.Services;
 using Parking.Data;
 
@@ -22,6 +24,22 @@ namespace Parking.Web
         {
             services.AddAutoMapper();
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = AuthOptions.ISSUER,
+                            ValidateAudience = true,
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
+
             services.AddMvc();
 
             services.AddDbContext<ParkingDbContext>(options =>
@@ -32,6 +50,7 @@ namespace Parking.Web
             services.AddTransient<CarService>();
             services.AddTransient<GarageService>();
             services.AddTransient<OwnerService>();
+            services.AddTransient<PersonService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -39,19 +58,23 @@ namespace Parking.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
             }
+            app.UseStatusCodePages();
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Garages}/{action=GetGarages}/{id?}");
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Parking.Core.Services;
 using Parking.Domain.Dto;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace Parking.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GaragesController : ControllerBase
     {
         private readonly GarageService _garageService;
@@ -16,14 +18,14 @@ namespace Parking.Web.Controllers
             _garageService = garageService;
         }
 
-        [HttpGet]
+        [Route("getgarages")]
         public IActionResult GetGarages()
         {
             return Ok(_garageService.GetGarages());
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetGarages([FromRoute] int id)
+        [Route("getgarage/{id}")]
+        public async Task<IActionResult> GetGarage([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -40,8 +42,8 @@ namespace Parking.Web.Controllers
             return Ok(garages);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGarages([FromRoute] int id, [FromBody] GarageDto garageDto)
+        [Route("updategarage/{id}")]
+        public async Task<IActionResult> PutGarage([FromRoute] int id, [FromBody] GarageDto garageDto)
         {
             if (!ModelState.IsValid)
             {
@@ -56,8 +58,8 @@ namespace Parking.Web.Controllers
             return Ok(await _garageService.UpdateGarage(id, garageDto));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostGarages([FromBody] GarageDto garageDto)
+        [Route("creategarage")]
+        public async Task<IActionResult> PostGarage([FromBody] GarageDto garageDto)
         {
             if (!ModelState.IsValid)
             {
@@ -67,8 +69,8 @@ namespace Parking.Web.Controllers
             return Ok(await _garageService.CreateGarage(garageDto));
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGarages([FromRoute] int id)
+        [Route("deletegarage/{id}")]
+        public async Task<IActionResult> DeleteGarage([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {

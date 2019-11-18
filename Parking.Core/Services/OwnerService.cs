@@ -57,7 +57,7 @@ namespace Parking.Core.Services
             ownerFromDb.FirstName = ownerFromDb.FirstName != ownerFromDto.FirstName ? ownerFromDto.FirstName : ownerFromDb.FirstName;
             ownerFromDb.LastName = ownerFromDb.LastName != ownerFromDto.LastName ? ownerFromDto.LastName : ownerFromDb.LastName;
             ownerFromDb.DateOfBirth = ownerFromDb.DateOfBirth != ownerFromDto.DateOfBirth ? ownerFromDto.DateOfBirth : ownerFromDb.DateOfBirth;
-            
+
             Owner owner = _dbContext.Owners.Update(ownerFromDb)?.Entity;
 
             _dbContext.Entry(owner).State = EntityState.Modified;

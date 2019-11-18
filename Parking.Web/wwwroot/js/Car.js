@@ -1,4 +1,4 @@
-﻿var HeadersOfColumnsCar =
+﻿var headersOfColumnsCar =
     "<tr>" +
     "<th>Id</th>" +
     "<th>Brand</th>" +
@@ -6,7 +6,7 @@
     "<th>Owner</th>" +
     "</tr>";
 
-function ParseCarToTr(car) {
+function parseCarToTr(car) {
     return "<tr>" +
         "<td id='Id'>" + car.id + "</td>" +
         "<td id='Brand'>" + car.brand + "</td>" +
@@ -15,10 +15,15 @@ function ParseCarToTr(car) {
         "</tr>";
 }
 
-function SetInputForGetOrUpdateOrDeleteCar(brand, carPlate, ownerId) {
+function setInputForGetOrUpdateOrDeleteCar(brand, carPlate, ownerId) {
     $('#enterBrandForGetOrUpdateOrDeleteCar').val(brand);
     $('#enterCarPlateForGetOrUpdateOrDeleteCar').val(carPlate);
     $('#enterOwnerIdForGetOrUpdateOrDeleteCar').val(ownerId);
+}
+
+function clearErrorMessage() {
+    $('#result').html('');
+    console.log('clearErrorMessage()');
 }
 
 function showErrorMessage(jqXHR, textStatus, errorThrown) {
@@ -31,25 +36,33 @@ function showErrorMessage(jqXHR, textStatus, errorThrown) {
     console.log(errorThrown);
 }
 
-function GetAllCars() {
+function getAllCars() {
     $('*').css({ 'cursor': 'wait' });
     $.ajax({
         type: "GET",
-        url: "/api/Cars",
+        url: "/api/Cars/getcars",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
+        beforeSend: function (xhr) {
+            var token = sessionStorage.getItem(tokenKey);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
         success: function (data) {
             $("#TableGetAllCars tr").remove();
 
-            var rows = HeadersOfColumnsCar;
+            var rows = headersOfColumnsCar;
 
             $.each(data, function (i, item) {
-                rows += ParseCarToTr(item);
+                rows += parseCarToTr(item);
             });
 
             $('#TableGetAllCars').append(rows);
 
+            clearErrorMessage();
             console.log(data);
+        },
+        fail: function (xhr, status, error) {
+            showErrorMessage(xhr, status, error);
         },
         error: function (xhr, status, error) {
             showErrorMessage(xhr, status, error);
@@ -60,24 +73,31 @@ function GetAllCars() {
     });
 }
 
-function GetCar() {
+function getCar() {
     var id = $('#enterIdCarForGetOrUpdateOrDeleteCar').val();
     if (id > 0) {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "GET",
-            url: "/api/Cars/" + id,
+            url: "/api/Cars/getcar/" + id,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
             success: function (car) {
                 if (car != null) {
-                    SetInputForGetOrUpdateOrDeleteCar(car.brand, car.carPlate, car.ownerId);
-                    console.log(car);
+                    setInputForGetOrUpdateOrDeleteCar(car.brand, car.carPlate, car.ownerId);
                 }
+                console.log(car);
+                clearErrorMessage();
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
-                SetInputForGetOrUpdateOrDeleteCar("", "", "");
             },
             complete: function (data) {
                 $('*').css({ 'cursor': 'default' });
@@ -86,7 +106,7 @@ function GetCar() {
     } else alert("Enter all empty field!");
 }
 
-function UpdateCar() {
+function updateCar() {
     var id = $('#enterIdCarForGetOrUpdateOrDeleteCar').val();
     var brand = $('#enterBrandForGetOrUpdateOrDeleteCar').val();
     var carPlate = $('#enterCarPlateForGetOrUpdateOrDeleteCar').val();
@@ -103,12 +123,21 @@ function UpdateCar() {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "PUT",
-            url: "/api/Cars/" + id,
+            url: "/api/Cars/updatecar/" + id,
             dataType: "json",
             data: dataToPut,
             contentType: "application/json; charset=utf-8",
-            success: function () {
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (result) {
                 alert("Update OK!");
+                console.log(result);
+                clearErrorMessage();
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
@@ -120,17 +149,26 @@ function UpdateCar() {
     } else alert("Enter all empty field!");
 }
 
-function DeleteCar() {
+function deleteCar() {
     var id = $('#enterIdCarForGetOrUpdateOrDeleteCar').val();
     if (id > 0) {
         $('*').css({ 'cursor': 'wait' });
         $.ajax({
             type: "DELETE",
-            url: "/api/Cars/" + id,
+            url: "/api/Cars/deletecar/" + id,
             contentType: "application/json; charset=utf-8",
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
             success: function (result) {
                 alert('Delete OK!');
-                SetInputForGetOrUpdateOrDeleteCar("", "", "");
+                console.log(result);
+                setInputForGetOrUpdateOrDeleteCar("", "", "");
+                clearErrorMessage();
+            },
+            fail: function (xhr, status, error) {
+                showErrorMessage(xhr, status, error);
             },
             error: function (xhr, status, error) {
                 showErrorMessage(xhr, status, error);
@@ -142,7 +180,7 @@ function DeleteCar() {
     } else alert("Enter all empty field!");
 }
 
-function CreateCar() {
+function createCar() {
     $('*').css({ 'cursor': 'wait' });
     var brand = $('#enterBrandForCreateCar').val();
     var carPlate = $('#enterCarPlateForCreateCar').val();
@@ -156,16 +194,24 @@ function CreateCar() {
     });
     $.ajax({
         type: "POST",
-        url: "/api/Cars",
+        url: "/api/Cars/createcar",
         dataType: "json",
         data: dataToPost,
         contentType: "application/json; charset=utf-8",
+        beforeSend: function (xhr) {
+            var token = sessionStorage.getItem(tokenKey);
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
         success: function (car) {
             if (car != null) {
                 $('#enterIdCarForCreateCar').val(car.id);
             }
             console.log(car);
             alert("Create OK!");
+            clearErrorMessage();
+        },
+        fail: function (xhr, status, error) {
+            showErrorMessage(xhr, status, error);
         },
         error: function (xhr, status, error) {
             showErrorMessage(xhr, status, error);
@@ -177,21 +223,21 @@ function CreateCar() {
 }
 
 $(document).on("click", "#btnGetAllCars", function () {
-    GetAllCars();
+    getAllCars();
 });
 
 $(document).on("click", "#btnGetCar", function () {
-    GetCar();
+    getCar();
 });
 
 $(document).on("click", "#btnUpdateCar", function () {
-    UpdateCar();
+    updateCar();
 });
 
 $(document).on("click", "#btnDeleteCar", function () {
-    DeleteCar();
+    deleteCar();
 });
 
 $(document).on("click", "#btnCreateCar", function () {
-    CreateCar();
+    createCar();
 });

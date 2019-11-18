@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Parking.Core.Services;
 using Parking.Domain.Dto;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace Parking.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CarsController : ControllerBase
     {
         private readonly CarService _carService;
@@ -16,13 +18,13 @@ namespace Parking.Web.Controllers
             _carService = carService;
         }
 
-        [HttpGet]
+        [Route("getcars")]
         public IActionResult GetCars()
         {
             return Ok(_carService.GetCars());
         }
 
-        [HttpGet("{id}")]
+        [Route("getcar/{id}")]
         public async Task<IActionResult> GetCar([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -40,7 +42,7 @@ namespace Parking.Web.Controllers
             return Ok(car);
         }
 
-        [HttpPut("{id}")]
+        [Route("updatecar/{id}")]
         public async Task<IActionResult> PutCar([FromRoute] int id, [FromBody] CarDto cardto)
         {
             if (!ModelState.IsValid)
@@ -56,7 +58,7 @@ namespace Parking.Web.Controllers
             return Ok(await _carService.UpdateCar(id, cardto));
         }
 
-        [HttpPost]
+        [Route("createcar")]
         public async Task<IActionResult> PostCar([FromBody] CarDto cardto)
         {
             if (!ModelState.IsValid)
@@ -67,8 +69,8 @@ namespace Parking.Web.Controllers
             return Ok(await _carService.CreateCar(cardto));
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCars([FromRoute] int id)
+        [Route("deletecar/{id}")]
+        public async Task<IActionResult> DeleteCar([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {

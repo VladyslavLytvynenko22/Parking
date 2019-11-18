@@ -3,14 +3,30 @@
 <head>
     <meta charset="utf-8" />
     <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
-    <script type="text/javascript" src="js/JavaScriptCar.js"></script>
-    <script type="text/javascript" src="js/JavaScriptGarage.js"></script>
-    <script type="text/javascript" src="js/JavaScriptOwner.js"></script>
+    <script type="text/javascript" src="js/Car.js"></script>
+    <script type="text/javascript" src="js/Garage.js"></script>
+    <script type="text/javascript" src="js/Owner.js"></script>
+    <script type="text/javascript" src="js/Login.js"></script>
     <link rel="stylesheet" type="text/css" href="css/StyleSheet.css" />
     <title>Parking</title>
 </head>
 <body>
     <div class="mainDiv">
+        <div class="mainloginDiv">
+            <div class="userInfo" style="display:none;">
+                <p>You: <span class="userName"></span></p>
+                <input type="button" value="Log Out" id="logOut" />
+            </div>
+            <div class="loginForm">
+                <h3>Log In</h3>
+                <label>Enter email</label><br />
+                <input type="email" id="emailLogin" /> <br /><br />
+                <label>Enter password</label><br />
+                <input type="password" id="passwordLogin" /><br /><br />
+                <input type="submit" id="submitLogin" value="Login" />
+                <input type="submit" id="submRegistration" value="Registration" />
+            </div>
+        </div>
         <div class="mainCarDiv">
             <div class="title">
                 <div class="DivForTable">
@@ -184,7 +200,7 @@
                 </div>
                 <div class="divForInputValue">
                     <lable class="LableForInput" for="enterDateOfBirthForGetOrUpdateOrDeleteOwner">Date Of Birth: </lable>
-                    <input type="text" id="enterDateOfBirthForGetOrUpdateOrDeleteOwner" />
+                    <input type="date" id="enterDateOfBirthForGetOrUpdateOrDeleteOwner" />
                 </div>
                 <div class="btnsDiv">
                     <input value="Update owner" type="button" id="btnUpdateOwner" />
@@ -207,7 +223,7 @@
                     </div>
                     <div class="divForInputValue">
                         <lable class="LableForInput" for="enterDateOfBirthForCreateOwner">Date Of Birth: </lable>
-                        <input type="text" id="enterDateOfBirthForCreateOwner" />
+                        <input type="date" id="enterDateOfBirthForCreateOwner" />
                     </div>
                 </div>
                 <div class="btnsDiv">

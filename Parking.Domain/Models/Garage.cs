@@ -7,6 +7,7 @@ namespace Parking.Domain.Models
         public int? Id { get; set; }
 
         [Required]
+        [Range(0, 9999)]
         public double Area { get; set; }
 
         public string Color { get; set; }

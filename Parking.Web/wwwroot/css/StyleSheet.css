@@ -46,7 +46,7 @@ table caption {
     font-size: 23px;
 }
 
-.mainCarDiv, .mainGarageDiv, .mainOwnerDiv, .result {
+.mainCarDiv, .mainGarageDiv, .mainOwnerDiv, .mainloginDiv, .result {
     clear: both;
     float: left;
     width: 100%;
